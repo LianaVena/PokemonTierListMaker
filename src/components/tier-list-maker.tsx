@@ -7,8 +7,7 @@ import _ from "lodash"
 
 export interface PokeNode {
     node: number
-    left: PokeNode | null
-    right: PokeNode | null
+    leaves: PokeNode[]
 }
 
 export default function TierListMaker() {
@@ -104,15 +103,12 @@ function setWinnerAndRestart(
             setTierList(tierListCopy)
             printTierList(tierListCopy)
             const newNodes: PokeNode[] = []
-            if (node0.left) {
-                newNodes.push(node0.left)
-            }
-            if (node0.right) {
-                newNodes.push(node0.right)
+            for (const node of node0.leaves) {
+                newNodes.push(node)
             }
             setNodes(newNodes)
         } else {
-            alert("No Winner????")
+            logger("NO WINNER???", "error")
         }
     }
 }
@@ -127,21 +123,11 @@ function pushUpdatedNode(
 ) {
     logger("PUSH NODE...", "debug")
     const nodesCopy = _.cloneDeep(nodes)
-    if (n1.left === null) {
-        n1.left = n2
-        nodesCopy.push(n1)
-        setNodes(nodesCopy)
-        setN1(null)
-        setN2(null)
-    } else if (n1.right === null) {
-        n1.right = n2
-        nodesCopy.push(n1)
-        setNodes(nodesCopy)
-        setN1(null)
-        setN2(null)
-    } else {
-        logger("COULD NOT PUSH NODES", "warn")
-    }
+    n1.leaves.push(n2)
+    nodesCopy.push(n1)
+    setNodes(nodesCopy)
+    setN1(null)
+    setN2(null)
 }
 
 function mergeNodes(
@@ -188,21 +174,18 @@ function nodeToString(node: PokeNode | null): string {
         ["(", ")"],
         ["[", "]"],
         ["{", "}"]
-    ];
+    ]
 
     function traverse(node: PokeNode | null, level: number): string {
         if (!node) {
-            return "";
+            return ""
         }
-        const [open, close] = parentheses[level % parentheses.length];
-        const leftSubtree = traverse(node.left, level + 1);
-        const rightSubtree = traverse(node.right, level + 1);
-        if (leftSubtree || rightSubtree) {
-            return `${node.node + ". " + getPokemonNameById(node.node)}${open}${leftSubtree}${close}${open}${rightSubtree}${close}`;
-        }
-        return `${node.node + ". " + getPokemonNameById(node.node)}`;
+        const [open, close] = parentheses[level % parentheses.length]
+        const children = node.leaves.map(child => traverse(child, level + 1)).join(close + open)
+        return `${node.node + "." + getPokemonNameById(node.node)}${children ? open + children + close : ""}`
     }
-    return traverse(node, 0);
+
+    return traverse(node, 0)
 }
 
 function printAllNodes(nodes: PokeNode[]) {
@@ -223,7 +206,7 @@ function printTierList(tierList: PokemonObject[]) {
 function getNodes() {
     const nodes: PokeNode[] = []
     for (const [key] of allPokemonInput) {
-        nodes.push({node: key, left: null, right: null})
+        nodes.push({node: key, leaves: []})
     }
     return nodes
 }
