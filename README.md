@@ -41,3 +41,7 @@ They are then shuffled so that the pairs shown to the user are random.
 ## Sources
 
 Images sourced from [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Main_Page)
+
+## Preview
+![preview1](/public/preview1.png)
+![preview2](/public/preview2.png)
