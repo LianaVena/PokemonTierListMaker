@@ -1,6 +1,6 @@
 import * as React from "react"
 import {getPokemonById, getPokemonNameById, PokemonObject} from "./pokemon.ts"
-import {logger} from "../components/logger.tsx"
+import {logger} from "./logger.ts"
 import _ from "lodash"
 import {PokeNode} from "../components/tier-list-maker.tsx"
 

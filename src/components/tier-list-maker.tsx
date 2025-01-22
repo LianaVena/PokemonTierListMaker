@@ -1,10 +1,11 @@
 import PairChooser from "./pair-chooser.tsx"
 import {allPokemonInput, getPokemonById, getPokemonNameById, PokemonObject} from "../functions/pokemon.ts"
-import {useState} from "react"
-import {logger} from "./logger.tsx"
+import * as React from "react"
+import {useEffect, useRef, useState} from "react"
+import {logger} from "../functions/logger.ts"
 import _ from "lodash"
 import {mergeNodes, popNodePair} from "../functions/tier-list-operations.ts"
-import {downloadJson} from "../functions/export.ts"
+import {downloadJson, importFromJson, validateJson} from "../functions/import-export.ts"
 
 export interface PokeNode {
     node: number
@@ -20,6 +21,8 @@ export default function TierListMaker() {
     const [tierList, setTierList] = useState<PokemonObject[]>([])
     const [counter, setCounter] = useState<number>(0)
     const [done, setDone] = useState<boolean>(false)
+    const [jsonData, setJsonData] = useState("")
+    const inputRef = useRef<HTMLInputElement>(null)
 
     logger("Number of nodes: " + nodes.length, "debug")
     printAllNodes(nodes)
@@ -31,13 +34,40 @@ export default function TierListMaker() {
         }
     }
 
-    function exportState() {
+    function handleExport() {
         downloadJson(node1, node2, nodes, tierList, counter)
     }
 
-    function importState() {
-        // TODO
+    async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const files = e.target.files
+        if (files) {
+            const file = files[0]
+            try {
+                const fileContents = await file.text()
+                const jsonData = JSON.parse(fileContents)
+                validateJson(jsonData)
+                setJsonData(jsonData)
+                importFromJson(jsonData, setNode1, setNode2, setNodes, setTierList, setCounter)
+                alert("Import successful.")
+            } catch (err) {
+                alert(err)
+            }
+        }
     }
+
+    function handleImport(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+        if (inputRef?.current) {
+            inputRef.current.click()
+        }
+    }
+
+    useEffect(() => {
+        if (node1 && node2) {
+            setPokemon1(getPokemonById(node1.node) || null)
+            setPokemon2(getPokemonById(node2.node) || null)
+        }
+    }, [node1, node2, jsonData])
 
     if (!done) {
         if (node1 === null || node2 === null) {
@@ -54,7 +84,7 @@ export default function TierListMaker() {
             <>
                 <h2>Your Tier List:</h2>
                 {tierList.map((pokemon) =>
-                    <div key={pokemon.id} className="pokemon">
+                    <div key={pokemon.id} className="inline">
                         <img src={pokemon.imageUrl} alt={pokemon.name} width="50px" height="50px"/>
                         <p>{pokemon.id + ". " + pokemon.name}</p>
                     </div>
@@ -68,11 +98,13 @@ export default function TierListMaker() {
                              onChosenChange={choosePokemon}>
                 </PairChooser>
                 <p>Comparisons made: {counter}</p>
-                <button onClick={exportState} className="pokemon">Export</button>
-                <button onClick={importState} className="pokemon">Import</button>
+                <button onClick={handleExport} className="inline">Export</button>
+                <form className="inline">
+                    <button onClick={handleImport}>Import</button>
+                    <input ref={inputRef} type="file" hidden onChange={handleFileUpload}/>
+                </form>
             </>
         )}
-
         </>
     )
 }

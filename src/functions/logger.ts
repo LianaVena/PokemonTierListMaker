@@ -1,4 +1,4 @@
-export const logger = (message: string, level: "debug" | "info" | "warn" | "error" = "info") => {
+export function logger(message: string, level: "debug" | "info" | "warn" | "error" = "info") {
     const date = new Date()
     const timestamp = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds()
 

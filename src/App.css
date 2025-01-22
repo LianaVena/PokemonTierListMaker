@@ -5,7 +5,7 @@
     text-align: center;
 }
 
-.pokemon {
+.inline {
     display: inline-block;
     margin: 1rem;
 }

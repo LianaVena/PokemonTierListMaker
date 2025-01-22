@@ -1,53 +1,43 @@
-# React + TypeScript + Vite
+# Pokémon Tier List Maker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> WIP - Currently only contains 5 Pokémon
 
-Currently, two official plugins are available:
+Creates a tier list by letting the user make a preference choice between pairs of Pokémon.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md)
-  uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast
-  Refresh
+## Motivation
 
-## Expanding the ESLint configuration
+I didn't see anything like this already existing.
+Closest is [Favorite Pokémon Chooser](https://quetzle.github.io/FavoritePokemon/) which only goes up to generation 6,
+shows you 10 favorites and doesn't cache your progress.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+I would like to mention other great "favorite Pokémon" websites:
 
-- Configure the top-level `parserOptions` property like this:
+- [TierMaker](https://tiermaker.com/create/every-pokmon-ever-fall-2020-all-dlc-601526) - lets you manually sort Pokémon
+  into tiers
+- [Ultimate Favorite Pokemon Picker](https://cajunavenger.github.io) - incredible table where user chooses their
+  favorites based on types and generation
+- [Favorite Pokémon Picker](https://www.dragonflycave.com/favorite.html) - lets user choose favorites and progressively
+  limit them until the best one is chosen (can return multiple favorites and has many customization options)
 
-```js
-export default tseslint.config({
-    languageOptions: {
-        // other options...
-        parserOptions: {
-            project: ['./tsconfig.node.json', './tsconfig.app.json'],
-            tsconfigRootDir: import.meta.dirname,
-        },
-    },
-})
-```
+## Algorithm
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or
-  `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Pokémon are represented as a `PokeNode` that contains `node` - ID of Pokémon and `leaves` - array of nodes that are
+considered worse by the user. At the beginning we load all Pokémon and create PokeNodes out of them with empty leaves.
+They are then shuffled so that the pairs shown to the user are random.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+1. A pair of PokeNodes is taken out of the beginning of the array.
+2. After a user chooses their preference, the worse Pokémon is placed into the leaves of the better Pokémon and the
+   better Pokémon is pushed to the end of the array.
+3. This is repeated until there is only one PokeNode in the array.
+4. That Pokémon is added to the tier list and its leaves create the new array.
 
-export default tseslint.config({
-    // Set the react version
-    settings: {react: {version: '18.3'}},
-    plugins: {
-        // Add the react plugin
-        react,
-    },
-    rules: {
-        // other rules...
-        // Enable its recommended rules
-        ...react.configs.recommended.rules,
-        ...react.configs['jsx-runtime'].rules,
-    },
-})
-```
+## Planned features
+
+- Save tier list as an image
+- Cache state in browser
+- Lets user set tiers
+- Alternative lists (Mega Evolutions, only one generation...)
+
+## Sources
+
+Images sourced from [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Main_Page)
