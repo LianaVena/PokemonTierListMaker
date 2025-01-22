@@ -1,3 +1,15 @@
+export function getPokemonById(id: number) {
+    return allPokemonInput.get(id)
+}
+
+export function getPokemonNameById(id: number) {
+    const pokemon = allPokemonInput.get(id)
+    if (pokemon) {
+        return pokemon.name
+    }
+    return ""
+}
+
 export interface PokemonObject {
     id: number
     name: string

@@ -1,8 +1,8 @@
-import {PokemonObject} from "../pokemon.ts"
+import {PokemonObject} from "../functions/pokemon.ts"
 
 export default function PokemonButton({pokemon, onChosenChange}: {
     pokemon: PokemonObject | null,
-    onChosenChange: (pokemon: PokemonObject) => void
+    onChosenChange: (_: PokemonObject) => void
 }) {
     const imageSize = Math.min(window.innerWidth, window.innerHeight) / 2
 

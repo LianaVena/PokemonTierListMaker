@@ -1,9 +1,10 @@
 import PairChooser from "./pair-chooser.tsx"
-import {allPokemonInput, PokemonObject} from "../pokemon.ts"
-import * as React from "react"
+import {allPokemonInput, getPokemonById, getPokemonNameById, PokemonObject} from "../functions/pokemon.ts"
 import {useState} from "react"
-import {logger} from "../logging/logger.tsx"
+import {logger} from "./logger.tsx"
 import _ from "lodash"
+import {mergeNodes, popNodePair} from "../functions/tier-list-operations.ts"
+import {downloadJson} from "../functions/export.ts"
 
 export interface PokeNode {
     node: number
@@ -17,6 +18,7 @@ export default function TierListMaker() {
     const [pokemon1, setPokemon1] = useState<PokemonObject | null>(null)
     const [pokemon2, setPokemon2] = useState<PokemonObject | null>(null)
     const [tierList, setTierList] = useState<PokemonObject[]>([])
+    const [counter, setCounter] = useState<number>(0)
     const [done, setDone] = useState<boolean>(false)
 
     logger("Number of nodes: " + nodes.length, "debug")
@@ -24,8 +26,17 @@ export default function TierListMaker() {
 
     function choosePokemon(pokemon: PokemonObject) {
         if (pokemon) {
+            setCounter((prev) => prev + 1)
             mergeNodes(node1, node2, pokemon, nodes, setNode1, setNode2, setNodes)
         }
+    }
+
+    function exportState() {
+        downloadJson(node1, node2, nodes, tierList, counter)
+    }
+
+    function importState() {
+        // TODO
     }
 
     if (!done) {
@@ -48,125 +59,22 @@ export default function TierListMaker() {
                         <p>{pokemon.id + ". " + pokemon.name}</p>
                     </div>
                 )}
+                <p>Comparisons made: {counter}</p>
             </>
         ) : (
-            <PairChooser pokemon1={pokemon1}
-                         pokemon2={pokemon2}
-                         onChosenChange={choosePokemon}>
-
-            </PairChooser>
+            <>
+                <PairChooser pokemon1={pokemon1}
+                             pokemon2={pokemon2}
+                             onChosenChange={choosePokemon}>
+                </PairChooser>
+                <p>Comparisons made: {counter}</p>
+                <button onClick={exportState} className="pokemon">Export</button>
+                <button onClick={importState} className="pokemon">Import</button>
+            </>
         )}
+
         </>
     )
-}
-
-function popNodePair(
-    nodes: PokeNode[],
-    setNode1: React.Dispatch<React.SetStateAction<PokeNode | null>>,
-    setNode2: React.Dispatch<React.SetStateAction<PokeNode | null>>,
-    setNodes: React.Dispatch<React.SetStateAction<PokeNode[]>>,
-    tierList: PokemonObject[],
-    setTierList: React.Dispatch<React.SetStateAction<PokemonObject[]>>,
-    setDone: React.Dispatch<React.SetStateAction<boolean>>
-) {
-    logger("POP PAIR...", "debug")
-    if (nodes.length > 1) {
-        const n1 = nodes[0]
-        const n2 = nodes[1]
-        setNode1(n1)
-        setNode2(n2)
-        const nodesCopy = _.cloneDeep(nodes)
-        nodesCopy.shift()
-        nodesCopy.shift()
-        setNodes(nodesCopy)
-        return [n1, n2]
-    } else {
-        setWinnerAndRestart(nodes, tierList, setNodes, setTierList, setDone)
-    }
-}
-
-function setWinnerAndRestart(
-    nodes: PokeNode[],
-    tierList: PokemonObject[],
-    setNodes: React.Dispatch<React.SetStateAction<PokeNode[]>>,
-    setTierList: React.Dispatch<React.SetStateAction<PokemonObject[]>>,
-    setDone: React.Dispatch<React.SetStateAction<boolean>>
-) {
-    if (nodes.length === 0) {
-        setDone(true)
-    } else {
-        const node0 = nodes[0]
-        const winner = getPokemonById(node0.node)
-        if (winner) {
-            const tierListCopy = _.cloneDeep(tierList)
-            tierListCopy.push(winner)
-            setTierList(tierListCopy)
-            printTierList(tierListCopy)
-            const newNodes: PokeNode[] = []
-            for (const node of node0.leaves) {
-                newNodes.push(node)
-            }
-            setNodes(newNodes)
-        } else {
-            logger("NO WINNER???", "error")
-        }
-    }
-}
-
-function pushUpdatedNode(
-    n1: PokeNode,
-    n2: PokeNode,
-    nodes: PokeNode[],
-    setN1: React.Dispatch<React.SetStateAction<PokeNode | null>>,
-    setN2: React.Dispatch<React.SetStateAction<PokeNode | null>>,
-    setNodes: React.Dispatch<React.SetStateAction<PokeNode[]>>
-) {
-    logger("PUSH NODE...", "debug")
-    const nodesCopy = _.cloneDeep(nodes)
-    n1.leaves.push(n2)
-    nodesCopy.push(n1)
-    setNodes(nodesCopy)
-    setN1(null)
-    setN2(null)
-}
-
-function mergeNodes(
-    node1: PokeNode | null,
-    node2: PokeNode | null,
-    chosenPokemon: PokemonObject | null,
-    nodes: PokeNode[],
-    setNode1: React.Dispatch<React.SetStateAction<PokeNode | null>>,
-    setNode2: React.Dispatch<React.SetStateAction<PokeNode | null>>,
-    setNodes: React.Dispatch<React.SetStateAction<PokeNode[]>>
-) {
-    logger("MERGE NODES...", "debug")
-    if (node1 && node2 && chosenPokemon) {
-        if (node1.node === chosenPokemon.id) {
-            pushUpdatedNode(node1, node2, nodes, setNode1, setNode2, setNodes)
-        } else if (node2.node === chosenPokemon.id) {
-            pushUpdatedNode(node2, node1, nodes, setNode2, setNode1, setNodes)
-        } else {
-            logger("Chosen pokemon " + chosenPokemon.name + " not in nodes: " +
-                getPokemonNameById(node1.node) + " " + getPokemonNameById(node2.node), "warn")
-        }
-    } else {
-        logger("NULL VALUE: chosenPokemon=" +
-            (chosenPokemon ? chosenPokemon.name : "null") +
-            " node1=" + (node1 ? getPokemonNameById(node1.node) : "null") +
-            " node2=" + (node2 ? getPokemonNameById(node2.node) : "null"), "warn")
-    }
-}
-
-function getPokemonById(id: number) {
-    return allPokemonInput.get(id)
-}
-
-function getPokemonNameById(id: number) {
-    const pokemon = allPokemonInput.get(id)
-    if (pokemon) {
-        return pokemon.name
-    }
-    return ""
 }
 
 function nodeToString(node: PokeNode | null): string {
@@ -193,14 +101,6 @@ function printAllNodes(nodes: PokeNode[]) {
     for (let i = 0; i < nodes.length; i++) {
         logger("nodes[" + i + "] = " + nodeToString(nodes[i]), "debug")
     }
-}
-
-function printTierList(tierList: PokemonObject[]) {
-    let result = "Result: "
-    for (const pokemon of tierList) {
-        result += pokemon.name + " "
-    }
-    logger(result, "debug")
 }
 
 function getNodes() {

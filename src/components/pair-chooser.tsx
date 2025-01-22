@@ -1,10 +1,10 @@
 import PokemonButton from "./pokemon-button.tsx"
-import {PokemonObject} from "../pokemon.ts"
+import {PokemonObject} from "../functions/pokemon.ts"
 
 export default function PairChooser({pokemon1, pokemon2, onChosenChange}: {
     pokemon1: PokemonObject | null,
     pokemon2: PokemonObject | null,
-    onChosenChange: (pokemon: PokemonObject) => void
+    onChosenChange: (_: PokemonObject) => void
 }) {
     return (
         <>
