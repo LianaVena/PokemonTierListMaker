@@ -40,19 +40,19 @@ export function mergeNodes(
 ) {
     logger("MERGE NODES...", "debug")
     if (node1 && node2 && chosenPokemon) {
-        if (node1.node === chosenPokemon.id) {
+        if (node1.id === chosenPokemon.id) {
             pushUpdatedNode(node1, node2, nodes, setNode1, setNode2, setNodes)
-        } else if (node2.node === chosenPokemon.id) {
+        } else if (node2.id === chosenPokemon.id) {
             pushUpdatedNode(node2, node1, nodes, setNode2, setNode1, setNodes)
         } else {
             logger("Chosen pokemon " + chosenPokemon.name + " not in nodes: " +
-                getPokemonNameById(node1.node) + " " + getPokemonNameById(node2.node), "warn")
+                getPokemonNameById(node1.id) + " " + getPokemonNameById(node2.id), "warn")
         }
     } else {
         logger("NULL VALUE: chosenPokemon=" +
             (chosenPokemon ? chosenPokemon.name : "null") +
-            " node1=" + (node1 ? getPokemonNameById(node1.node) : "null") +
-            " node2=" + (node2 ? getPokemonNameById(node2.node) : "null"), "warn")
+            " node1=" + (node1 ? getPokemonNameById(node1.id) : "null") +
+            " node2=" + (node2 ? getPokemonNameById(node2.id) : "null"), "warn")
     }
 }
 
@@ -84,7 +84,7 @@ function setWinnerAndRestart(
         setDone(true)
     } else {
         const node0 = nodes[0]
-        const winner = getPokemonById(node0.node)
+        const winner = getPokemonById(node0.id)
         if (winner) {
             const tierListCopy = _.cloneDeep(tierList)
             tierListCopy.push(winner)

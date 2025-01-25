@@ -16,7 +16,8 @@ export default function PokemonButton({pokemon, onChosenChange}: {
         <>
             {pokemon ?
                 (<button className="inline" onClick={handleClick}>
-                    <img src={pokemon.imageUrl} alt={pokemon.name} width={imageSize} height={imageSize}/>
+                    <img src={"/pokemon-images/" + pokemon.id + ".png"} alt={pokemon.name} width={imageSize}
+                         height={imageSize}/>
                     <h3>{pokemon.id + ". " + pokemon.name}</h3>
                 </button>)
                 : (<></>)

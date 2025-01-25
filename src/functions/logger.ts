@@ -13,7 +13,7 @@ export function logger(message: string, level: "debug" | "info" | "warn" | "erro
         const fileName = urlMatch[1]
         const line = urlMatch[2]
         const column = urlMatch[3]
-        componentName = `[${fileName} ${line}:${column}]`
+        componentName = "[" + fileName + " " + line + ":" + column + "]"
     } else {
         const urlMatchWithQuery = componentName.match(/^(.*\/)([^/]+\.tsx)\?t=\d+:(\d+):(\d+)$/)
 
@@ -21,7 +21,7 @@ export function logger(message: string, level: "debug" | "info" | "warn" | "erro
             const fileName = urlMatchWithQuery[2]
             const line = urlMatchWithQuery[3]
             const column = urlMatchWithQuery[4]
-            componentName = `${fileName} ${line}:${column}`
+            componentName = fileName + " " + line + ":" + column
         }
     }
 
@@ -32,7 +32,7 @@ export function logger(message: string, level: "debug" | "info" | "warn" | "erro
         error: "ERROR"
     }
 
-    const logMessage = `[${timestamp}] [${levels[level]}] [${componentName}] ${message}`
+    const logMessage = "[" + timestamp + "] [" + levels[level] + "] [" + componentName + "] " + message
 
     switch (level) {
         case "debug":

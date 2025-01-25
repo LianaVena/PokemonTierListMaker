@@ -8,7 +8,7 @@ export function downloadJson(node1: PokeNode | null, node2: PokeNode | null, nod
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = `$pokemon-tier-list-state.json`
+    a.download = "pokemon-tier-list-state.json"
     a.style.display = "none"
     document.body.appendChild(a)
     a.click()
@@ -29,7 +29,7 @@ function createExportJson(node1: PokeNode | null, node2: PokeNode | null, nodes:
 
 function processNode(node: PokeNode): object {
     return {
-        node: node.node,
+        id: node.id,
         leaves: node.leaves.map(processNode)
     }
 }
@@ -88,7 +88,7 @@ function isPokeNode(node: PokeNode) {
     return (
         node &&
         typeof node === "object" &&
-        node.node &&
+        node.id &&
         Array.isArray(node.leaves) &&
         node.leaves.every(isPokeNode)
     )
@@ -100,6 +100,6 @@ function isPokemonObject(pokemon: PokemonObject) {
         typeof pokemon === "object" &&
         pokemon.id &&
         pokemon.name &&
-        pokemon.imageUrl
+        pokemon.image
     )
 }

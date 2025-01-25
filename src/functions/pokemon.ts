@@ -1,8 +1,8 @@
-export function getPokemonById(id: number) {
+export function getPokemonById(id: string) {
     return allPokemonInput.get(id)
 }
 
-export function getPokemonNameById(id: number) {
+export function getPokemonNameById(id: string) {
     const pokemon = allPokemonInput.get(id)
     if (pokemon) {
         return pokemon.name
@@ -11,15 +11,15 @@ export function getPokemonNameById(id: number) {
 }
 
 export interface PokemonObject {
-    id: number
+    id: string
     name: string
-    imageUrl: string
+    image: string
 }
 
-export const allPokemonInput = new Map<number, PokemonObject>([
-    [1, {id: 1, name: "Bulbasaur", imageUrl: "https://archives.bulbagarden.net/media/upload/f/fb/0001Bulbasaur.png"}],
-    [4, {id: 4, name: "Charmander", imageUrl: "https://archives.bulbagarden.net/media/upload/2/27/0004Charmander.png"}],
-    [7, {id: 7, name: "Squirtle", imageUrl: "https://archives.bulbagarden.net/media/upload/5/54/0007Squirtle.png"}],
-    [25, {id: 25, name: "Pikachu", imageUrl: "https://archives.bulbagarden.net/media/upload/4/4a/0025Pikachu.png"}],
-    [133, {id: 133, name: "Eevee", imageUrl: "https://archives.bulbagarden.net/media/upload/4/4c/0133Eevee.png"}]
+export const allPokemonInput = new Map<string, PokemonObject>([
+    ["1", {id: "1", name: "Bulbasaur", image: "0001Bulbasaur"}],
+    ["4", {id: "4", name: "Charmander", image: "0004Charmander"}],
+    ["7", {id: "7", name: "Squirtle", image: "0007Squirtle"}],
+    ["25", {id: "25", name: "Pikachu", image: "0025Pikachu"}],
+    ["133", {id: "133", name: "Eevee", image: "0133Eevee"}]
 ])

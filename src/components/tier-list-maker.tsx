@@ -1,14 +1,14 @@
 import PairChooser from "./pair-chooser.tsx"
-import {allPokemonInput, getPokemonById, getPokemonNameById, PokemonObject} from "../functions/pokemon.ts"
+import {getPokemonById, PokemonObject} from "../functions/pokemon.ts"
 import * as React from "react"
 import {useEffect, useRef, useState} from "react"
 import {logger} from "../functions/logger.ts"
-import _ from "lodash"
-import {mergeNodes, popNodePair} from "../functions/tier-list-operations.ts"
+import {mergeNodes, popNodePair} from "../functions/tier-list-functions.ts"
 import {downloadJson, importFromJson, validateJson} from "../functions/import-export.ts"
+import {getNodes, printAllNodes, shuffle} from "../functions/pokenode-functions.ts"
 
 export interface PokeNode {
-    node: number
+    id: string
     leaves: PokeNode[]
 }
 
@@ -64,8 +64,8 @@ export default function TierListMaker() {
 
     useEffect(() => {
         if (node1 && node2) {
-            setPokemon1(getPokemonById(node1.node) || null)
-            setPokemon2(getPokemonById(node2.node) || null)
+            setPokemon1(getPokemonById(node1.id) || null)
+            setPokemon2(getPokemonById(node2.id) || null)
         }
     }, [node1, node2, jsonData])
 
@@ -73,81 +73,40 @@ export default function TierListMaker() {
         if (node1 === null || node2 === null) {
             const pair = popNodePair(nodes, setNode1, setNode2, setNodes, tierList, setTierList, setDone)
             if (pair) {
-                setPokemon1(getPokemonById(pair[0].node) || null)
-                setPokemon2(getPokemonById(pair[1].node) || null)
+                setPokemon1(getPokemonById(pair[0].id) || null)
+                setPokemon2(getPokemonById(pair[1].id) || null)
             }
         }
     }
 
     return (
-        <> {done ? (
-            <>
-                <h2>Your Tier List:</h2>
-                {tierList.map((pokemon) =>
-                    <div key={pokemon.id} className="inline">
-                        <img src={pokemon.imageUrl} alt={pokemon.name} width="50px" height="50px"/>
-                        <p>{pokemon.id + ". " + pokemon.name}</p>
-                    </div>
-                )}
-                <p>Comparisons made: {counter}</p>
-            </>
-        ) : (
-            <>
-                <PairChooser pokemon1={pokemon1}
-                             pokemon2={pokemon2}
-                             onChosenChange={choosePokemon}>
-                </PairChooser>
-                <p>Comparisons made: {counter}</p>
-                <button onClick={handleExport} className="inline">Export</button>
-                <form className="inline">
-                    <button onClick={handleImport}>Import</button>
-                    <input ref={inputRef} type="file" hidden onChange={handleFileUpload}/>
-                </form>
-            </>
-        )}
+        <>
+            {done ? (
+                <>
+                    <h2>Your Tier List:</h2>
+                    {tierList.map((pokemon) =>
+                        <div key={pokemon.id} className="inline">
+                            <img src={"/pokemon-images/" + pokemon.id + ".png"} alt={pokemon.name} width="50px"
+                                 height="50px"/>
+                            <p>{pokemon.id + ". " + pokemon.name}</p>
+                        </div>
+                    )}
+                    <p>Comparisons made: {counter}</p>
+                </>
+            ) : (
+                <>
+                    <PairChooser pokemon1={pokemon1}
+                                 pokemon2={pokemon2}
+                                 onChosenChange={choosePokemon}>
+                    </PairChooser>
+                    <p>Comparisons made: {counter}</p>
+                    <button onClick={handleExport} className="inline">Export</button>
+                    <form className="inline">
+                        <button onClick={handleImport}>Import</button>
+                        <input ref={inputRef} type="file" hidden onChange={handleFileUpload}/>
+                    </form>
+                </>
+            )}
         </>
     )
-}
-
-function nodeToString(node: PokeNode | null): string {
-    const parentheses = [
-        ["(", ")"],
-        ["[", "]"],
-        ["{", "}"]
-    ]
-
-    function traverse(node: PokeNode | null, level: number): string {
-        if (!node) {
-            return ""
-        }
-        const [open, close] = parentheses[level % parentheses.length]
-        const children = node.leaves.map(child => traverse(child, level + 1)).join(close + open)
-        return `${node.node + "." + getPokemonNameById(node.node)}${children ? open + children + close : ""}`
-    }
-
-    return traverse(node, 0)
-}
-
-function printAllNodes(nodes: PokeNode[]) {
-    logger("-----------", "debug")
-    for (let i = 0; i < nodes.length; i++) {
-        logger("nodes[" + i + "] = " + nodeToString(nodes[i]), "debug")
-    }
-}
-
-function getNodes() {
-    const nodes: PokeNode[] = []
-    for (const [key] of allPokemonInput) {
-        nodes.push({node: key, leaves: []})
-    }
-    return nodes
-}
-
-function shuffle(array: PokeNode[]) {
-    const result = _.cloneDeep(array)
-    for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]]
-    }
-    return result
 }

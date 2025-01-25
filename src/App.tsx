@@ -1,6 +1,7 @@
 import "./App.css"
 import TierListMaker from "./components/tier-list-maker.tsx"
 
+
 export default function App() {
     return (
         <>
@@ -9,4 +10,3 @@ export default function App() {
         </>
     )
 }
-
