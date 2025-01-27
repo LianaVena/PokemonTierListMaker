@@ -86,7 +86,8 @@ export default function TierListMaker() {
                     <h2>Your Tier List:</h2>
                     {tierList.map((pokemon) =>
                         <div key={pokemon.id} className="inline">
-                            <img src={"/pokemon-images/" + pokemon.id + ".png"} alt={pokemon.name} width="50px"
+                            <img src={import.meta.env.BASE_URL + "pokemon-images/" + pokemon.id + ".png"}
+                                 alt={pokemon.name} width="50px"
                                  height="50px"/>
                             <p>{pokemon.id + ". " + pokemon.name}</p>
                         </div>
