@@ -63,6 +63,20 @@ export default function TierListMaker() {
         }
     }
 
+    function handleReset() {
+        if (window.confirm("Are you sure you want to reset?")) {
+            setNodes(shuffle(getNodes()))
+            setNode1(null)
+            setNode2(null)
+            setPokemon1(null)
+            setPokemon2(null)
+            setTierList([])
+            setCounter(0)
+            setDone(false)
+            setJsonData("")
+        }
+    }
+
     useEffect(() => {
         if (node1 && node2) {
             setPokemon1(getPokemonById(node1.id) || null)
@@ -84,7 +98,7 @@ export default function TierListMaker() {
         <>
 
             {done ? (
-                <TierListResult tierList={tierList} counter={counter}></TierListResult>
+                <TierListResult tierList={tierList} counter={counter} handleReset={handleReset}></TierListResult>
             ) : (
                 <>
                     <PairChooser pokemon1={pokemon1}
@@ -97,6 +111,7 @@ export default function TierListMaker() {
                         <button onClick={handleImport}>Import</button>
                         <input ref={inputRef} type="file" hidden onChange={handleFileUpload}/>
                     </form>
+                    <button onClick={handleReset} className="inline">Reset</button>
                 </>
             )}
         </>
