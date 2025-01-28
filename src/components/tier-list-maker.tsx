@@ -6,6 +6,7 @@ import {logger} from "../functions/logger.ts"
 import {mergeNodes, popNodePair} from "../functions/tier-list-functions.ts"
 import {downloadJson, importFromJson, validateJson} from "../functions/import-export.ts"
 import {getNodes, printAllNodes, shuffle} from "../functions/pokenode-functions.ts"
+import TierListResult from "./tier-list-result.tsx"
 
 export interface PokeNode {
     id: string
@@ -81,19 +82,9 @@ export default function TierListMaker() {
 
     return (
         <>
+
             {done ? (
-                <>
-                    <h2>Your Tier List:</h2>
-                    {tierList.map((pokemon) =>
-                        <div key={pokemon.id} className="inline">
-                            <img src={import.meta.env.BASE_URL + "pokemon-images/" + pokemon.id + ".png"}
-                                 alt={pokemon.name} width="50px"
-                                 height="50px"/>
-                            <p>{pokemon.id + ". " + pokemon.name}</p>
-                        </div>
-                    )}
-                    <p>Comparisons made: {counter}</p>
-                </>
+                <TierListResult tierList={tierList} counter={counter}></TierListResult>
             ) : (
                 <>
                     <PairChooser pokemon1={pokemon1}

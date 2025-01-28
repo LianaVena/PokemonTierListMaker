@@ -40,9 +40,9 @@ export function mergeNodes(
 ) {
     logger("MERGE NODES...", "debug")
     if (node1 && node2 && chosenPokemon) {
-        if (node1.id === chosenPokemon.id) {
+        if (node1.id === chosenPokemon.mapId) {
             pushUpdatedNode(node1, node2, nodes, setNode1, setNode2, setNodes)
-        } else if (node2.id === chosenPokemon.id) {
+        } else if (node2.id === chosenPokemon.mapId) {
             pushUpdatedNode(node2, node1, nodes, setNode2, setNode1, setNodes)
         } else {
             logger("Chosen pokemon " + chosenPokemon.name + " not in nodes: " +
