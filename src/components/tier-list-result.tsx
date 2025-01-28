@@ -3,10 +3,9 @@ import {toPng} from "html-to-image"
 import {logger} from "../functions/logger.ts"
 import {PokemonObject} from "../functions/pokemon.ts"
 
-export default function TierListResult({tierList, counter, handleReset}: {
+export default function TierListResult({tierList, counter}: {
     tierList: PokemonObject[],
-    counter: number,
-    handleReset: () => void
+    counter: number
 }) {
     const [show, setShow] = useState(false)
     const imageRef = useRef<HTMLDivElement>(null)
@@ -45,7 +44,6 @@ export default function TierListResult({tierList, counter, handleReset}: {
             </div>
             <p>Comparisons made: {counter}</p>
             <button onClick={handleClick} className="inline">Download Image</button>
-            <button onClick={handleReset} className="inline">Reset</button>
             {show &&
                 <div ref={imageRef}>
                     <h2>My favorite Pokémon</h2>

@@ -1,23 +1,24 @@
 # Pokémon Tier List Maker
 
-> WIP - Currently only contains 5 Pokémon
+> WIP - Currently only contains 11 Pokémon
 
 Creates a tier list by letting the user make a preference choice between pairs of Pokémon.
 
 ## Motivation
 
-I didn't see anything like this already existing.
-Closest is [Favorite Pokémon Chooser](https://quetzle.github.io/FavoritePokemon/) which only goes up to generation 6,
-shows you 10 favorites and doesn't cache your progress.
+I wanted to be able to create a tier list of all Pokémon in a simpler way than manually sorting them. There are some
+websites with similar functionality, but I decided to make my own to satisfy all my requirements.
 
-I would like to mention other great "favorite Pokémon" websites:
+Similar websites:
 
-- [TierMaker](https://tiermaker.com/create/every-pokmon-ever-fall-2020-all-dlc-601526) - lets you manually sort Pokémon
+- [Ultimate Favorite Pokemon Picker](https://cajunavenger.github.io) - Incredible table where user chooses their
+  favorites based on types and generation (Really fun!)
+- [Favorite Pokémon Picker](https://www.dragonflycave.com/favorite.html) - Closest to my functionality thanks to many
+  customization options. Lets user choose favorites and progressively limit them until the best one is chosen
+- [TierMaker](https://tiermaker.com/create/every-pokmon-ever-fall-2020-all-dlc-601526) - Lets user manually sort Pokémon
   into tiers
-- [Ultimate Favorite Pokemon Picker](https://cajunavenger.github.io) - incredible table where user chooses their
-  favorites based on types and generation
-- [Favorite Pokémon Picker](https://www.dragonflycave.com/favorite.html) - lets user choose favorites and progressively
-  limit them until the best one is chosen (can return multiple favorites and has many customization options)
+- [Favorite Pokémon Chooser](https://quetzle.github.io/FavoritePokemon/) - Only goes up to generation 6 and shows you 10
+  favorites
 
 ## Algorithm
 
@@ -45,3 +46,4 @@ Images sourced from [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Main_Pa
 
 ![preview1](/public/preview1.png)
 ![preview2](/public/preview2.png)
+![result](/public/result.png)
