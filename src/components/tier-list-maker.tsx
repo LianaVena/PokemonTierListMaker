@@ -6,11 +6,17 @@ import {logger} from "../functions/logger.ts"
 import {mergeNodes, popNodePair} from "../functions/tier-list-functions.ts"
 import {downloadJson, importFromJson, validateJson} from "../functions/import-export.ts"
 import {getNodes, printAllNodes, shuffle} from "../functions/pokenode-functions.ts"
-import TierListResult from "./tier-list-result.tsx"
+import TierListResultScreen from "./tier-list-result-screen.tsx"
 
 export interface PokeNode {
     id: string
     leaves: PokeNode[]
+}
+
+export type Tier = {
+    startIndex: number
+    name: string
+    color: string
 }
 
 export default function TierListMaker() {
@@ -94,11 +100,16 @@ export default function TierListMaker() {
         }
     }
 
+    const tiers: Tier[] = [
+        {startIndex: 0, name: "S", color: "DarkOliveGreen"},
+        {startIndex: 3, name: "A", color: "Gold"},
+        {startIndex: 7, name: "B", color: "Tomato"}
+    ]
+
     return (
         <>
-
             {done ? (
-                <TierListResult tierList={tierList} counter={counter}></TierListResult>
+                <TierListResultScreen tiers={tiers} tierList={tierList} counter={counter}></TierListResultScreen>
             ) : (
                 <>
                     <PairChooser pokemon1={pokemon1}
