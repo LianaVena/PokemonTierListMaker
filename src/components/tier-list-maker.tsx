@@ -7,13 +7,14 @@ import {mergeNodes, popNodePair} from "../functions/tier-list-functions.ts"
 import {downloadJson, importFromJson, validateJson} from "../functions/import-export.ts"
 import {getNodes, printAllNodes, shuffle} from "../functions/pokenode-functions.ts"
 import TierListResultScreen from "./tier-list-result-screen.tsx"
+import Settings from "./settings.tsx"
 
 export interface PokeNode {
     id: string
     leaves: PokeNode[]
 }
 
-export type Tier = {
+export interface Tier {
     startIndex: number
     name: string
     color: string
@@ -26,9 +27,11 @@ export default function TierListMaker() {
     const [pokemon1, setPokemon1] = useState<PokemonObject | null>(null)
     const [pokemon2, setPokemon2] = useState<PokemonObject | null>(null)
     const [tierList, setTierList] = useState<PokemonObject[]>([])
+    const [tiers, setTiers] = useState<Tier[]>([])
     const [counter, setCounter] = useState<number>(0)
     const [done, setDone] = useState<boolean>(false)
     const [jsonData, setJsonData] = useState("")
+    const [showSettings, setShowSettings] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
 
     logger("Number of nodes: " + nodes.length, "debug")
@@ -83,6 +86,10 @@ export default function TierListMaker() {
         }
     }
 
+    function toggleSettings() {
+        setShowSettings(!showSettings)
+    }
+
     useEffect(() => {
         if (node1 && node2) {
             setPokemon1(getPokemonById(node1.id) || null)
@@ -100,12 +107,6 @@ export default function TierListMaker() {
         }
     }
 
-    const tiers: Tier[] = [
-        {startIndex: 0, name: "S", color: "DarkOliveGreen"},
-        {startIndex: 3, name: "A", color: "Gold"},
-        {startIndex: 7, name: "B", color: "Tomato"}
-    ]
-
     return (
         <>
             {done ? (
@@ -120,12 +121,16 @@ export default function TierListMaker() {
 
                 </>
             )}
+            <button onClick={toggleSettings} className="inline">Settings ↓</button>
             <button onClick={handleExport} className="inline">Export</button>
             <form className="inline">
                 <button onClick={handleImport}>Import</button>
                 <input ref={inputRef} type="file" hidden onChange={handleFileUpload}/>
             </form>
             <button onClick={handleReset} className="inline">Reset</button>
+            {showSettings &&
+                <Settings tiers={tiers} setTiers={setTiers} length={tierList.length}></Settings>
+            }
         </>
     )
 }

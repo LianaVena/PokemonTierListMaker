@@ -9,3 +9,8 @@
     display: inline-block;
     margin: 1rem;
 }
+
+.pokemon-image {
+    width: min(45vw, 45vh);
+    height: min(45vw, 45vh);
+}
