@@ -16,11 +16,18 @@ export default function TierListDisplay({tiers, tierList, forDownload}: {
                         const nextTierStartIndex = index + 1 < tiers.length ? tiers[index + 1].startIndex : tierList.length
                         const tierItems = tierList.slice(startIndex, nextTierStartIndex)
                         return (
+                            <>
+                                {
+                                    !tiers.find(x => x.startIndex == 0) &&
+                                    <TierListSubDisplay items={tierList.slice(0, tiers[0].startIndex)} index={0}
+                                                        forDownload={forDownload}></TierListSubDisplay>
+                                }
                             <div key={index * 10000 + tier.startIndex}>
                                 <h3 style={{backgroundColor: tier.color}}>{tier.name}</h3>
                                 <TierListSubDisplay items={tierItems} index={startIndex}
                                                     forDownload={forDownload}></TierListSubDisplay>
                             </div>
+                            </>
                         )
                     })}
                 </>

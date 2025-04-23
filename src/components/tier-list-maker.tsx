@@ -110,7 +110,8 @@ export default function TierListMaker() {
     return (
         <>
             {done ? (
-                <TierListResultScreen tiers={tiers} tierList={tierList} counter={counter}></TierListResultScreen>
+                <TierListResultScreen tiers={tiers} tierList={tierList}
+                                      counter={counter}></TierListResultScreen>
             ) : (
                 <>
                     <PairChooser pokemon1={pokemon1}
@@ -121,16 +122,21 @@ export default function TierListMaker() {
 
                 </>
             )}
-            <button onClick={toggleSettings} className="inline">Settings ↓</button>
             <button onClick={handleExport} className="inline">Export</button>
             <form className="inline">
                 <button onClick={handleImport}>Import</button>
                 <input ref={inputRef} type="file" hidden onChange={handleFileUpload}/>
             </form>
             <button onClick={handleReset} className="inline">Reset</button>
+            {done &&
+                <>
+                    <button onClick={toggleSettings} className="inline">Settings ↓</button>
             {showSettings &&
                 <Settings tiers={tiers} setTiers={setTiers} length={tierList.length}></Settings>
             }
+                </>
+            }
+
         </>
     )
 }
