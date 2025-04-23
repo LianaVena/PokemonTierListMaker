@@ -6,11 +6,18 @@ import {logger} from "../functions/logger.ts"
 import {mergeNodes, popNodePair} from "../functions/tier-list-functions.ts"
 import {downloadJson, importFromJson, validateJson} from "../functions/import-export.ts"
 import {getNodes, printAllNodes, shuffle} from "../functions/pokenode-functions.ts"
-import TierListResult from "./tier-list-result.tsx"
+import TierListResultScreen from "./tier-list-result-screen.tsx"
+import Settings from "./settings.tsx"
 
 export interface PokeNode {
     id: string
     leaves: PokeNode[]
+}
+
+export interface Tier {
+    startIndex: number
+    name: string
+    color: string
 }
 
 export default function TierListMaker() {
@@ -20,9 +27,11 @@ export default function TierListMaker() {
     const [pokemon1, setPokemon1] = useState<PokemonObject | null>(null)
     const [pokemon2, setPokemon2] = useState<PokemonObject | null>(null)
     const [tierList, setTierList] = useState<PokemonObject[]>([])
+    const [tiers, setTiers] = useState<Tier[]>([])
     const [counter, setCounter] = useState<number>(0)
     const [done, setDone] = useState<boolean>(false)
     const [jsonData, setJsonData] = useState("")
+    const [showSettings, setShowSettings] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
 
     logger("Number of nodes: " + nodes.length, "debug")
@@ -77,6 +86,10 @@ export default function TierListMaker() {
         }
     }
 
+    function toggleSettings() {
+        setShowSettings(!showSettings)
+    }
+
     useEffect(() => {
         if (node1 && node2) {
             setPokemon1(getPokemonById(node1.id) || null)
@@ -96,9 +109,9 @@ export default function TierListMaker() {
 
     return (
         <>
-
             {done ? (
-                <TierListResult tierList={tierList} counter={counter}></TierListResult>
+                <TierListResultScreen tiers={tiers} tierList={tierList}
+                                      counter={counter}></TierListResultScreen>
             ) : (
                 <>
                     <PairChooser pokemon1={pokemon1}
@@ -115,6 +128,15 @@ export default function TierListMaker() {
                 <input ref={inputRef} type="file" hidden onChange={handleFileUpload}/>
             </form>
             <button onClick={handleReset} className="inline">Reset</button>
+            {done &&
+                <>
+                    <button onClick={toggleSettings} className="inline">Settings ↓</button>
+            {showSettings &&
+                <Settings tiers={tiers} setTiers={setTiers} length={tierList.length}></Settings>
+            }
+                </>
+            }
+
         </>
     )
 }

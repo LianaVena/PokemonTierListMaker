@@ -2,8 +2,11 @@ import {useRef, useState} from "react"
 import {toPng} from "html-to-image"
 import {logger} from "../functions/logger.ts"
 import {PokemonObject} from "../functions/pokemon.ts"
+import {Tier} from "./tier-list-maker.tsx"
+import TierListDisplay from "./tier-list-display.tsx"
 
-export default function TierListResult({tierList, counter}: {
+export default function TierListResultScreen({tiers, tierList, counter}: {
+    tiers: Tier[],
     tierList: PokemonObject[],
     counter: number
 }) {
@@ -33,35 +36,14 @@ export default function TierListResult({tierList, counter}: {
         <>
             <div>
                 <h2>Your Tier List:</h2>
-                {tierList.map((pokemon, index) =>
-                    <div key={index * 10000 + pokemon.id} className="inline">
-                        <img src={import.meta.env.BASE_URL + "pokemon-images/" + pokemon.image + ".png"}
-                             alt={pokemon.name} width="50px"
-                             height="50px"/>
-                        <p>{(index + 1) + ". " + pokemon.name}</p>
-                    </div>
-                )}
+                <TierListDisplay tiers={tiers} tierList={tierList} forDownload={false}></TierListDisplay>
             </div>
             <p>Comparisons made: {counter}</p>
             <button onClick={handleClick} className="inline">Download Image</button>
             {show &&
-                <div ref={imageRef}>
+                <div ref={imageRef} style={{width: "max-content"}}>
                     <h2>My favorite Pokémon</h2>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: `repeat(10, max-content)`,
-                        justifyContent: "center",
-                        width: "auto"
-                    }}>
-                        {tierList.map((pokemon, index) =>
-                            <div key={index * 10000 + pokemon.id} className="inline">
-                                <img src={import.meta.env.BASE_URL + "pokemon-images/" + pokemon.image + ".png"}
-                                     alt={pokemon.name} width="50px"
-                                     height="50px"/>
-                                <p>{(index + 1) + ". " + pokemon.name}</p>
-                            </div>
-                        )}
-                    </div>
+                    <TierListDisplay tiers={tiers} tierList={tierList} forDownload={true}></TierListDisplay>
                 </div>
             }
         </>

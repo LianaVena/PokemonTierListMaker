@@ -10,6 +10,12 @@
     margin: 1rem;
 }
 
+.inline-row {
+    display: inline-block;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
 .pokemon-image {
     width: min(45vw, 45vh);
     height: min(45vw, 45vh);
