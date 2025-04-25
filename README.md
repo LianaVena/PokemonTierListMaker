@@ -34,8 +34,6 @@ They are then shuffled so that the pairs shown to the user are random.
 
 ## Planned features
 
-- Cache state in browser
-- Lets user set tiers
 - Alternative lists (Mega Evolutions, only one generation...)
 
 ## Sources
