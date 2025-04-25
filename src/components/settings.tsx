@@ -11,7 +11,7 @@ export default function Settings({tiers, setTiers, length}: {
 }) {
     const {register, handleSubmit, setValue, formState: {errors}} = useForm<Tier>()
     const [selectedTier, setSelectedTier] = React.useState<string>()
-    const [inputIndex, setInputIndex] = React.useState<number>()
+    const [inputIndex, setInputIndex] = React.useState<number>(0)
     const [inputName, setInputName] = React.useState<string>("")
 
     const indexRequiredMessage = "Please choose which index of the ordered Pokémon should this tier start with. Minimum value is 0."
