@@ -107,6 +107,17 @@ export default function TierListMaker() {
         }
     }
 
+    useEffect(() => {
+        function handleBeforeUnload(event: BeforeUnloadEvent) {
+            event.preventDefault()
+        }
+
+        window.addEventListener("beforeunload", handleBeforeUnload)
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload)
+        }
+    }, [])
+
     return (
         <>
             {done ? (
