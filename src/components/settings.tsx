@@ -11,10 +11,12 @@ export default function Settings({tiers, setTiers, length}: {
 }) {
     const {register, handleSubmit, setValue, formState: {errors}} = useForm<Tier>()
     const [selectedTier, setSelectedTier] = React.useState<string>()
-    const [inputIndex, setInputIndex] = React.useState<number>(0)
+    const [inputIndex, setInputIndex] = React.useState<number | string>("")
     const [inputName, setInputName] = React.useState<string>("")
 
-    const indexRequiredMessage = "Please choose which index of the ordered Pokémon should this tier start with. Minimum value is 0."
+    const indexRequiredMessage = "Please choose which index of the ordered Pokémon should this tier start with."
+    const indexBellowMin = "Please choose index greater than 0."
+    const indexAboveMax = "Please choose index smaller than " + (length + 1) + "."
     const nameRequiredMessage = "Please choose the displayed label for the tier."
 
     function handleSelectionChange(e: ChangeEvent<HTMLSelectElement>) {
@@ -64,7 +66,11 @@ export default function Settings({tiers, setTiers, length}: {
                     <input
                         type="number"
                         placeholder="Starting index of the tier"
-                        {...register("startIndex", {required: indexRequiredMessage, max: length - 1})}
+                        {...register("startIndex", {
+                            required: indexRequiredMessage,
+                            min: {value: 1, message: indexBellowMin},
+                            max: {value: length, message: indexAboveMax}
+                        })}
                         value={inputIndex}
                         onChange={handleInputIndexChange}
                         className="inline-row"
@@ -99,15 +105,15 @@ export default function Settings({tiers, setTiers, length}: {
                     _.remove(result, x => x.startIndex.toString() == selectedTier?.split(" ")[0])
                     setTiers(result)
                     setSelectedTier(undefined)
-                    if (tiers.length > 0) {
+                    if (result.length > 0) {
                         const tier0 = result[0]
                         setInputIndex(tier0.startIndex)
                         setValue("startIndex", tier0.startIndex)
                         setInputName(tier0.name)
                         setValue("name", tier0.name)
                     } else {
-                        setInputIndex(0)
-                        setValue("startIndex", 0)
+                        setInputIndex("")
+                        setValue("startIndex", 1)
                         setInputName("")
                         setValue("name", "")
                     }

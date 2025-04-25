@@ -12,13 +12,13 @@ export default function TierListDisplay({tiers, tierList, forDownload}: {
             {tiers.length > 0 ?
                 <>
                     {
-                        !tiers.find(x => x.startIndex == 0) &&
-                        <TierListSubDisplay items={tierList.slice(0, tiers[0].startIndex)} index={0}
+                        !tiers.find(x => x.startIndex == 1) &&
+                        <TierListSubDisplay items={tierList.slice(0, tiers[0].startIndex - 1)} index={0}
                                             forDownload={forDownload}></TierListSubDisplay>
                     }
                     {tiers.map((tier, index) => {
-                        const startIndex: number = tier.startIndex
-                        const nextTierStartIndex = index + 1 < tiers.length ? tiers[index + 1].startIndex : tierList.length
+                        const startIndex: number = tier.startIndex - 1
+                        const nextTierStartIndex = index + 1 < tiers.length ? tiers[index + 1].startIndex - 1 : tierList.length
                         const tierItems = tierList.slice(startIndex, nextTierStartIndex)
                         return (
                             <div key={index * 10000 + tier.startIndex}>
